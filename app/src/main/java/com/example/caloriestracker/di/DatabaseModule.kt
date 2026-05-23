@@ -6,6 +6,8 @@ import androidx.room.RoomDatabase
 import com.example.caloriestracker.data.database.AppDatabase
 import com.example.caloriestracker.data.database.JournalDao
 import com.example.caloriestracker.data.repository.JournalRepositoryImpl
+import com.example.caloriestracker.data.search.EmbeddingEngine
+import com.example.caloriestracker.data.search.EmbeddingGenerator
 import com.example.caloriestracker.domain.repository.JournalRepository
 import dagger.Binds
 import dagger.Module
@@ -24,6 +26,12 @@ abstract class DatabaseModule {
     abstract fun bindJournalRepository(
         journalRepositoryImpl: JournalRepositoryImpl
     ): JournalRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindEmbeddingEngine(
+        embeddingGenerator: EmbeddingGenerator
+    ): EmbeddingEngine
 
     companion object {
         

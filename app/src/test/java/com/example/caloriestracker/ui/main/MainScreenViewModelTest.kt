@@ -26,6 +26,19 @@ class MainScreenViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
+    private val fakeGeminiApi = object : com.example.caloriestracker.data.network.GeminiApi {
+        override suspend fun generateContent(apiKey: String, request: com.example.caloriestracker.data.network.GeminiRequest): com.example.caloriestracker.data.network.GeminiResponse {
+            return com.example.caloriestracker.data.network.GeminiResponse()
+        }
+    }
+    private val fakeAiService = com.example.caloriestracker.data.network.AiService(fakeGeminiApi, kotlinx.serialization.json.Json { })
+
+    private val fakeEmbeddingEngine = object : com.example.caloriestracker.data.search.EmbeddingEngine {
+        override fun generateEmbedding(text: String): FloatArray {
+            return FloatArray(384).apply { this[0] = 1f }
+        }
+    }
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
@@ -39,7 +52,7 @@ class MainScreenViewModelTest {
     @Test
     fun uiState_initiallyLoading() = runTest {
         val repository = FakeJournalRepository()
-        val viewModel = MainScreenViewModel(repository)
+        val viewModel = MainScreenViewModel(repository, fakeAiService, fakeEmbeddingEngine)
         
         // Assert that the initial state of StateFlow is indeed Loading
         assertEquals(MainScreenUiState.Loading, viewModel.uiState.value)
@@ -61,7 +74,7 @@ class MainScreenViewModelTest {
         repository.saveEntry(entry1)
         repository.saveEntry(entry2)
 
-        val viewModel = MainScreenViewModel(repository)
+        val viewModel = MainScreenViewModel(repository, fakeAiService, fakeEmbeddingEngine)
         
         val states = mutableListOf<MainScreenUiState>()
         // Start collection to activate StateFlow and keep tracking its emissions
@@ -84,6 +97,7 @@ class MainScreenViewModelTest {
         job.cancel()
         viewModel.viewModelScope.cancel()
     }
+
 }
 
 private class FakeJournalRepository : JournalRepository {
@@ -117,5 +131,9 @@ private class FakeJournalRepository : JournalRepository {
                         it.content.contains(query, ignoreCase = true)
             }
         }
+    }
+
+    override suspend fun getSemanticContext(query: String, limit: Int): List<JournalEntry> {
+        return searchEntries(query).first().take(limit)
     }
 }

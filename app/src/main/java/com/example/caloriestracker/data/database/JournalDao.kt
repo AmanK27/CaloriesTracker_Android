@@ -61,4 +61,14 @@ interface JournalDao {
 
     @Query("DELETE FROM entries_fts WHERE rowid = :rowid")
     suspend fun deleteFtsEntry(rowid: Long)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertEmbedding(embedding: EntryEmbeddingEntity)
+
+    @Query("SELECT * FROM entry_embeddings")
+    suspend fun getAllEmbeddings(): List<EntryEmbeddingEntity>
+
+    @Transaction
+    @Query("SELECT * FROM entries WHERE id IN (:ids)")
+    suspend fun getEntriesByIds(ids: List<Long>): List<EntryWithDetails>
 }

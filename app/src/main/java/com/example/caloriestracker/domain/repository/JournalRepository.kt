@@ -10,4 +10,5 @@ interface JournalRepository {
     suspend fun saveEntry(entry: JournalEntry)
     suspend fun deleteEntry(entry: JournalEntry)
     fun searchEntries(query: String): Flow<List<JournalEntry>>
+    suspend fun getSemanticContext(query: String, limit: Int = 3): List<JournalEntry>
 }

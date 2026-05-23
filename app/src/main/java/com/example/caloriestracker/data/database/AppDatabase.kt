@@ -9,9 +9,10 @@ import androidx.room.RoomDatabase
         TagEntity::class,
         EntryTagCrossRef::class,
         AttachmentEntity::class,
-        EntryFtsEntity::class
+        EntryFtsEntity::class,
+        EntryEmbeddingEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
