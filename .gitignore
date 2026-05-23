@@ -1,0 +1,30 @@
+# Agent Architecture
+.tmp/
+.env
+credentials.json
+token.json
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+cmake-build-*/
+
+# Android Studio / IntelliJ IDEA
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+*.iml
+
+# OS / Miscellaneous
+.DS_Store
+Thumbs.db
+*.bak
+*.user
